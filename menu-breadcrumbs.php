@@ -40,10 +40,10 @@ function menu_breadcrumbs($menuLocation) {
             echo '<nav class="breadcrumbs">';
             foreach ($breadcrumbItems as $i => $bci) {
                 if ($i < ($countBCItems - 1)) {
-                    echo '<a href="' . $bci['url'] . '">' . $bci['title'] . '</a>';
+                    echo '<span><a href="' . $bci['url'] . '">' . $bci['title'] . '</a></span>';
                 }
                 else {
-                    echo '<span>' . $bci['title'] . '</span>';
+                    echo '<span class="last">' . $bci['title'] . '</span>';
                 }
             }
             echo '</nav>';
