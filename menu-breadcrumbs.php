@@ -4,7 +4,12 @@ Plugin Name: Menu Breadcrumbs
 Description: Creates the breadcrumbs path from the menu structure, and not from the page hierarchy. Warnung: If a page is included into a menu twice, only one (arbitrary) breadcrumb path is created
 */
 
-function menu_breadcrumbs($menuLocation) {
+function menu_breadcrumbs($menuLocation, $opt = array()) {
+    $opt = array_merge(array(
+        'echo' => false,
+    ), $opt);
+
+    $str = '';
 
     $menuLocationToId = get_nav_menu_locations();
     if (isset($menuLocationToId[$menuLocation])) {
@@ -15,7 +20,12 @@ function menu_breadcrumbs($menuLocation) {
     }
 
     if ($menuId) {
-        $pageId = get_the_ID();
+        if (is_home()) {
+            $pageId = get_option('page_for_posts');
+        }
+        else {
+            $pageId = get_the_ID();
+        }
         $currentItemId = false;
         $items = wp_get_nav_menu_items($menuId);
         $itemArray = array();
@@ -36,18 +46,24 @@ function menu_breadcrumbs($menuLocation) {
             }
             $countBCItems = count($breadcrumbItems);
 
-
-            echo '<nav class="breadcrumbs">';
+            $str .= '<nav class="breadcrumbs">';
             foreach ($breadcrumbItems as $i => $bci) {
                 if ($i < ($countBCItems - 1)) {
-                    echo '<span><a href="' . $bci['url'] . '">' . $bci['title'] . '</a></span>';
+                    $str .= '<span><a href="' . $bci['url'] . '">' . $bci['title'] . '</a></span>';
                 }
                 else {
-                    echo '<span class="last">' . $bci['title'] . '</span>';
+                    $str .= '<span class="last">' . $bci['title'] . '</span>';
                 }
             }
-            echo '</nav>';
+            $str .= '</nav>';
         }
 
+    }
+
+    if ($opt['echo']) {
+        echo $str;
+    }
+    else {
+        return $str;
     }
 }
